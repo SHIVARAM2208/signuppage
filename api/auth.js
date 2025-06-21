@@ -1,8 +1,8 @@
-import clientPromise from "./db";
-import bcrypt from "bcryptjs";
-import { signJwt, verifyJwt } from "./jwt";
+const clientPromise = require("./db");
+const bcrypt = require("bcryptjs");
+const { signJwt, verifyJwt } = require("./jwt");
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   const client = await clientPromise;
   const db = client.db("signuppage");
   const users = db.collection("users");
@@ -45,9 +45,9 @@ export default async function handler(req, res) {
   }
 
   return res.status(405).json({ error: "Method not allowed" });
-}
+};
 
-export const config = {
+module.exports.config = {
   api: {
     bodyParser: true,
   },
