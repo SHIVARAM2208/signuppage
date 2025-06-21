@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export default function AuthForm({ mode, onLogin }) {
+export default function AuthForm({ mode, onLogin, setMode }) {
   const [form, setForm] = useState({ username: '', password: '' });
   const [msg, setMsg] = useState('');
   const [loading, setLoading] = useState(false);
@@ -31,7 +31,8 @@ export default function AuthForm({ mode, onLogin }) {
 
   return (
     <form onSubmit={handleSubmit} style={{
-      maxWidth: 300, margin: '2rem auto', padding: 24, border: '1px solid #ccc', borderRadius: 8, background: '#fafafa'
+      maxWidth: 300, margin: '2rem auto', padding: 24,
+      border: '1px solid #ccc', borderRadius: 8, background: '#fafafa'
     }}>
       <h2>{mode === 'signup' ? 'Sign Up' : 'Login'}</h2>
       <input
@@ -59,6 +60,31 @@ export default function AuthForm({ mode, onLogin }) {
         {loading ? 'Please wait...' : (mode === 'signup' ? 'Sign Up' : 'Login')}
       </button>
       <div style={{ marginTop: 12, color: msg.includes('success') ? 'green' : 'red' }}>{msg}</div>
+      <div style={{ marginTop: 16, textAlign: 'center' }}>
+        {mode === 'login' ? (
+          <span>
+            Don&apos;t have an account?{' '}
+            <button
+              type="button"
+              onClick={() => setMode('signup')}
+              style={{ background: 'none', border: 'none', color: '#0070f3', cursor: 'pointer', textDecoration: 'underline', padding: 0 }}
+            >
+              Sign up
+            </button>
+          </span>
+        ) : (
+          <span>
+            Already have an account?{' '}
+            <button
+              type="button"
+              onClick={() => setMode('login')}
+              style={{ background: 'none', border: 'none', color: '#0070f3', cursor: 'pointer', textDecoration: 'underline', padding: 0 }}
+            >
+              Login
+            </button>
+          </span>
+        )}
+      </div>
     </form>
   );
 }
