@@ -1,4 +1,4 @@
-import { MongoClient } from "mongodb";
+const { MongoClient } = require("mongodb");
 const uri = process.env.MONGODB_URI;
 const options = {};
 let client;
@@ -17,4 +17,4 @@ if (process.env.NODE_ENV === "development") {
   client = new MongoClient(uri, options);
   clientPromise = client.connect();
 }
-export default clientPromise;
+module.exports = clientPromise;
