@@ -7,13 +7,11 @@
   </head>
   <body>
     <div id="root"></div>
-    <!-- Simulate a built React app bundle -->
-    <script>
-      // Minimal React "Hello World" without actual React.js, for static demo
-      document.getElementById('root').innerHTML = `
-        <h1>Hello, React (Static)!</h1>
-        <p>This is a static HTML file served from the public folder.</p>
-      `;
-    </script>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <!-- Add a link to the login page outside of the React app for visibility -->
+    <div style="text-align:center; margin-top:24px;">
+      <a href="/login" style="font-size: 20px; color: #0070f3;">Login</a>
+    </div>
+    <!-- React will render inside #root -->
   </body>
 </html>
