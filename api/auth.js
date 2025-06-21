@@ -1,10 +1,10 @@
-// Express-like API handler for login and signup
 import clientPromise from "./db";
 import bcrypt from "bcryptjs";
+import { signJwt, verifyJwt } from "./jwt";
 
 export default async function handler(req, res) {
   const client = await clientPromise;
-  const db = client.db("signuppage"); // Change as needed
+  const db = client.db("signuppage");
   const users = db.collection("users");
 
   if (req.method === "POST" && req.query.action === "signup") {
@@ -29,11 +29,22 @@ export default async function handler(req, res) {
     const valid = await bcrypt.compare(password, user.password);
     if (!valid)
       return res.status(401).json({ error: "Invalid credentials" });
-    // For production, use JWT or sessions; here we just return success
-    return res.status(200).json({ message: "Login successful" });
+    // JWT token for sessionless authentication
+    const token = signJwt({ username: user.username, id: user._id });
+    return res.status(200).json({ message: "Login successful", token });
   }
 
-  res.status(405).json({ error: "Method not allowed" });
+  if (req.method === "GET" && req.query.action === "me") {
+    // Example protected route usage
+    const auth = req.headers.authorization;
+    if (!auth) return res.status(401).json({ error: "No token" });
+    const token = auth.split(" ")[1];
+    const payload = verifyJwt(token);
+    if (!payload) return res.status(401).json({ error: "Invalid token" });
+    return res.status(200).json({ user: payload });
+  }
+
+  return res.status(405).json({ error: "Method not allowed" });
 }
 
 export const config = {
