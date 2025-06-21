@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export default function AuthForm({ mode, onLogin, setMode }) {
+export default function AuthForm({ mode, onLogin }) {
   const [form, setForm] = useState({ username: '', password: '' });
   const [msg, setMsg] = useState('');
   const [loading, setLoading] = useState(false);
@@ -60,31 +60,6 @@ export default function AuthForm({ mode, onLogin, setMode }) {
         {loading ? 'Please wait...' : (mode === 'signup' ? 'Sign Up' : 'Login')}
       </button>
       <div style={{ marginTop: 12, color: msg.includes('success') ? 'green' : 'red' }}>{msg}</div>
-      <div style={{ marginTop: 16, textAlign: 'center' }}>
-        {mode === 'login' ? (
-          <span>
-            Don&apos;t have an account?{' '}
-            <button
-              type="button"
-              onClick={() => setMode('signup')}
-              style={{ background: 'none', border: 'none', color: '#0070f3', cursor: 'pointer', textDecoration: 'underline', padding: 0 }}
-            >
-              Sign up
-            </button>
-          </span>
-        ) : (
-          <span>
-            Already have an account?{' '}
-            <button
-              type="button"
-              onClick={() => setMode('login')}
-              style={{ background: 'none', border: 'none', color: '#0070f3', cursor: 'pointer', textDecoration: 'underline', padding: 0 }}
-            >
-              Login
-            </button>
-          </span>
-        )}
-      </div>
     </form>
   );
 }
