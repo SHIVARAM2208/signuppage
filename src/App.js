@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import AuthForm from './AuthForm';
 
 function Home() {
@@ -41,24 +41,43 @@ function Signup({ setJwt }) {
 }
 
 function Profile({ jwt }) {
+  const [me, setMe] = React.useState(null);
+
   const fetchMe = async () => {
     if (!jwt) return;
     const res = await fetch('/api/auth?action=me', {
       headers: { Authorization: `Bearer ${jwt}` }
     });
     const data = await res.json();
-    alert(JSON.stringify(data));
+    setMe(data.user || data);
   };
 
   return jwt ? (
     <div style={{ textAlign: 'center', marginTop: 20 }}>
       <button onClick={fetchMe}>Show My Info (Protected Route)</button>
+      {me && (
+        <div style={{ marginTop: 20 }}>
+          <h3>My Profile Info</h3>
+          <pre style={{ textAlign: 'left', display: 'inline-block', background: '#f5f5f5', padding: 12, borderRadius: 6 }}>
+            {JSON.stringify(me, null, 2)}
+          </pre>
+        </div>
+      )}
     </div>
   ) : null;
 }
 
 function App() {
   const [jwt, setJwt] = useState(() => localStorage.getItem('jwt_token') || "");
+
+  // Save jwt to localStorage for persistence
+  React.useEffect(() => {
+    if (jwt) {
+      localStorage.setItem('jwt_token', jwt);
+    } else {
+      localStorage.removeItem('jwt_token');
+    }
+  }, [jwt]);
 
   return (
     <Router>
