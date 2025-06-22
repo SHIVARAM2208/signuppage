@@ -1,65 +1,84 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-export default function AuthForm({ mode, onLogin }) {
-  const [form, setForm] = useState({ username: '', password: '' });
-  const [msg, setMsg] = useState('');
-  const [loading, setLoading] = useState(false);
+export default function SignupForm() {
+  const [form, setForm] = useState({
+    username: "",
+    password: "",
+    name: "",
+    email: "",
+    phone: "",
+  });
+  const [msg, setMsg] = useState("");
 
-  const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setMsg('');
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/auth?action=${mode}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      });
-      const data = await res.json();
-      setMsg(data.message || data.error);
-      if (data.token && mode === 'login') {
-        localStorage.setItem('jwt_token', data.token);
-        if (onLogin) onLogin(data.token);
-      }
-    } catch {
-      setMsg('Something went wrong!');
-    }
-    setLoading(false);
+    setMsg("Signing up...");
+    const res = await fetch("/api/auth?action=signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    });
+    const data = await res.json();
+    setMsg(data.message || data.error);
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{
-      maxWidth: 300, margin: '2rem auto', padding: 24,
-      border: '1px solid #ccc', borderRadius: 8, background: '#fafafa'
-    }}>
-      <h2>{mode === 'signup' ? 'Sign Up' : 'Login'}</h2>
+    <form onSubmit={handleSubmit} style={{ maxWidth: 400, margin: "auto" }}>
+      <h2>Sign Up</h2>
       <input
+        type="text"
+        name="name"
+        placeholder="Full Name"
+        value={form.name}
+        onChange={handleChange}
+        required
+        style={{ width: "100%", margin: "8px 0", padding: 8 }}
+      />
+      <input
+        type="text"
         name="username"
         placeholder="Username"
         value={form.username}
         onChange={handleChange}
         required
-        style={{ display: 'block', marginBottom: 12, width: '100%', padding: 8 }}
+        style={{ width: "100%", margin: "8px 0", padding: 8 }}
       />
       <input
-        name="password"
+        type="email"
+        name="email"
+        placeholder="Email"
+        value={form.email}
+        onChange={handleChange}
+        required
+        style={{ width: "100%", margin: "8px 0", padding: 8 }}
+      />
+      <input
+        type="tel"
+        name="phone"
+        placeholder="Phone Number"
+        value={form.phone}
+        onChange={handleChange}
+        required
+        pattern="[0-9]{10,15}"
+        style={{ width: "100%", margin: "8px 0", padding: 8 }}
+      />
+      <input
         type="password"
+        name="password"
         placeholder="Password"
         value={form.password}
         onChange={handleChange}
         required
-        style={{ display: 'block', marginBottom: 12, width: '100%', padding: 8 }}
+        style={{ width: "100%", margin: "8px 0", padding: 8 }}
       />
-      <button
-        type="submit"
-        disabled={loading}
-        style={{ width: "100%", padding: 10, background: "#0070f3", color: "#fff", border: 0, borderRadius: 4 }}
-      >
-        {loading ? 'Please wait...' : (mode === 'signup' ? 'Sign Up' : 'Login')}
+      <button type="submit" style={{ width: "100%", padding: 10 }}>
+        Sign Up
       </button>
-      <div style={{ marginTop: 12, color: msg.includes('success') ? 'green' : 'red' }}>{msg}</div>
+      {msg && <div style={{ marginTop: 10 }}>{msg}</div>}
     </form>
   );
 }
